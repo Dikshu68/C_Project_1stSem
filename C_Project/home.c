@@ -1,21 +1,25 @@
 #include <stdio.h>
 #include <windows.h>
 #include <stdlib.h>
-int contact[100];
+#include <string.h>
 
-struct Info{
-    int index;
+struct Info {
     char name[100];
     char number[100];
     char email[100];
 };
 
-int add(struct Info s[], int count);
-void view(struct Info s[], int count);
+struct Info s[50];
+int count = 0;
+
+int add();
+int view();
+int removeContact();
+
+
 int main(){
     struct Info s[50];
     int running = 1; 
-    int count = 0;
     while(running){  
         Sleep(500);
         int input;
@@ -23,7 +27,7 @@ int main(){
         Sleep(1000);
         printf("**\n");
         Sleep(2000);    
-        printf("      Welcome to the Contact management system\n ");
+        printf("      Welcome to the Contact management system                \n ");
         Sleep(2000);
         printf("** \n");
         printf("1.Add an contact \n");
@@ -36,19 +40,24 @@ int main(){
                 Sleep(1000);
 
         scanf("%d",&input);
-        getchar();
         switch(input){
         case 1:
-                count = add(s,count);
+                add();
                 printf("add");
                 continue;
         case 2:
-                view(s,count);
+        
+                view();
+                printf("contact list is :\n");
                 continue;
         case 3:
                 printf("Edit");
                 continue;
+        
         case 4:
+                removeContact();
+                continue;
+        case 5:
                 printf("Have a wonderfull day bye");
                 break;
         default:
@@ -62,46 +71,68 @@ int main(){
 }
 }
 
-int add(struct Info s[], int count){
-    printf("You choosed to add a new contact\n");
+int add() {
+    if (count >= 50) {
+        printf("The contact list is full!\n");
+        Sleep(1500);
+        return 0;
+    }
 
-    printf("First Name: ");
-    gets(s[count].name);
+    printf("Add a new contact \n");
+    printf("Full Name: ");
+    scanf(" %[^\n]", s[count].name);
+    printf("Phone Number: ");
+    scanf("%s", s[count].number);
+    printf("Email: ");
+    scanf("%s", s[count].email);
 
-    printf("Enter Number: ");
-    gets(s[count].number);
-
-    printf("Enter Email");
-    gets(s[count].email);
-
-    s[count].index = count + 1;
+    count++;
     printf("Contact added successfully!\n");
-    Sleep(1000);
-
-    return count +1;
+    Sleep(1500);
+    return 0;
 }
 
-void view(struct Info s[], int count){
-        system("cls");
-        if (count == 0){
-                printf("The array is empty pls press 1 to add");
+int view() {
+    if (count == 0) {
+        printf("The contact list is empty.\n");
+        Sleep(1500);
+        return 0;
+    }
 
+    printf("Contacts:\n");
+    for (int i = 0; i < count; i++) {
+        printf("ID: %d\n", i);
+        printf("Name: %s\n", s[i].name);
+        printf("Number: %s\n", s[i].number);
+        printf("Email: %s\n", s[i].email);
+        
+    }
+    system("pause");
+    return 0;
+}
+
+int removeContact() {
+    if (count == 0) {
+        printf("The contact list is empty.\n");
+        Sleep(1500);
+        return 0;
+    }
+
+    int id;
+    printf("Enter contact ID to remove: ");
+    scanf("%d", &id);
+
+    if (id < 0 || id >= count) {
+        printf("Invalid contact id\n");
+        Sleep(1500);
+    } else {
+        for (int i = id; i < count - 1; i++) {
+            s[i] = s[i + 1];
         }
-        else{
-                printf("================ CURRENT CONTACTS =================\n");
-                printf("ID\t%-15s\t%-15s\t%-15s\n","Name","Number","Email");
-                printf("------------------------------------------------------\n");
-                for(int i = 0;i< count;i++){
-                        printf("%d\t%-15s\t%-15s\t%-15s\n",
-                                s[i].index,
-                                s[i].name,
-                                s[i].number,
-                                s[i].email
-                        
-                        );
-                printf("=======================================================");
-                }
-                printf("\nPress any key to return to menu...");
-                system("pause > nul");
-        }
+        count--;
+        printf("Contact removed successfully!\n");
+        Sleep(1000);
+    }
+
+    return 0;
 }
